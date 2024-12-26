@@ -1,0 +1,14 @@
+.display {
+    border: solid;
+    width: 100px;
+    height: 20px;
+}
+
+.row {
+    display: flex;
+}
+
+.row button {
+    width: 25px;
+    height: 25px;
+}
