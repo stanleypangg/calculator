@@ -10,6 +10,22 @@ function convertID(id) {
         case "seven": return 7;
         case "eight": return 8;
         case "nine": return 9;
+        case "plus": return "+";
+        case "minus": return "-";
+        case "multiply": return "×";
+        case "divide": return "÷";
+    }
+}
+
+function isOperator(input) {
+    switch (input) {
+        case "+":
+        case "-":
+        case "×":
+        case "÷":
+            return true;
+        default:
+            return false;
     }
 }
 
@@ -21,12 +37,15 @@ const buttons = document.querySelector(".buttons");
 
 buttons.addEventListener("click", (e) => {
     let id = e.target.id;
-    let number = convertID(id)
-    if (op) {
-        b += number;
+    let input = convertID(id)
+    if (isOperator(input)) {
+        op = input;
+        display.textContent = `${a} ${op}`;
+    } else if (op) {
+        b += input;
         display.textContent = `${a} ${op} ${b}`;
     } else {
-        a += number;
+        a += input;
         display.textContent = a;
     }
 });
