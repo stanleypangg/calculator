@@ -30,6 +30,7 @@ function convertID(id) {
         case "minus": return "-";
         case "multiply": return "×";
         case "divide": return "÷";
+        case "equal": return "=";
     }
 }
 
@@ -63,14 +64,19 @@ const buttons = document.querySelector(".buttons");
 buttons.addEventListener("click", (e) => {
     let id = e.target.id;
     let input = convertID(id)
-    if (isOperator(input)) {
+
+    if (input === "=") {
+        display.textContent = operate(parseFloat(a), parseFloat(b), op);
+    } else if (!op && !isOperator(input)) {
+        a += input;
+        display.textContent = a;
+    } else if (isOperator(input) && b) {
+        ;;
+    } else if (isOperator(input)) {
         op = input;
         display.textContent = `${a} ${op}`;
     } else if (op) {
         b += input;
         display.textContent = `${a} ${op} ${b}`;
-    } else {
-        a += input;
-        display.textContent = a;
-    }
+    } 
 });
