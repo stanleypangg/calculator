@@ -1,3 +1,5 @@
+// TODO: implement . button and add keyboard support
+
 function add(a, b) {
     return a + b;
 }
@@ -31,6 +33,7 @@ function convertID(id) {
         case "multiply": return "×";
         case "divide": return "÷";
         case "equal": return "=";
+        case "clear": return "clear";
     }
 }
 
@@ -55,6 +58,18 @@ function operate(a, b, op) {
     }
 }
 
+function clear() {
+    display.textContent = "";
+    a = "";
+    b = "";
+    op = undefined;
+}
+
+function roundResult(result) {
+    return Math.round(result * 1000) / 1000; // Adjust precision as needed
+}
+
+
 let a, b, op;
 a = b = "";
 
@@ -62,21 +77,45 @@ const display = document.querySelector(".display");
 const buttons = document.querySelector(".buttons");
 
 buttons.addEventListener("click", (e) => {
-    let id = e.target.id;
-    let input = convertID(id)
+    const id = e.target.id;
+    const input = convertID(id);
 
-    if (input === "=") {
-        display.textContent = operate(parseFloat(a), parseFloat(b), op);
-    } else if (!op && !isOperator(input)) {
-        a += input;
-        display.textContent = a;
-    } else if (isOperator(input) && b) {
-        ;;
+    if (input === "clear") {
+        clear();
+    } else if (input === "=") {
+        if (a !== "" && b !== "" && op) {
+            if (op === "÷" && b === "0") {
+                display.textContent = "Error: Division by 0";
+                a = "";
+                b = "";
+                op = undefined;
+            } else {
+                a = roundResult(operate(parseFloat(a), parseFloat(b), op));
+                display.textContent = a;
+                b = "";
+                op = undefined;
+            }
+        } else {
+            display.textContent = "Error: Incomplete input";
+        }
     } else if (isOperator(input)) {
-        op = input;
-        display.textContent = `${a} ${op}`;
-    } else if (op) {
-        b += input;
-        display.textContent = `${a} ${op} ${b}`;
-    } 
+        if (a !== "" && b !== "" && op) {
+            a = roundResult(operate(parseFloat(a), parseFloat(b), op)); // Evaluate the previous pair
+            b = ""; // Reset the second operand
+            op = input; // Set the new operator
+            display.textContent = a; // Update the display with the result
+        } else if (a !== "" && op) {
+            op = input; // Allow changing the operator
+        } else {
+            op = input; // Set the operator if not already set
+        }
+    } else if (!op) {
+        a += input; // Capture the first operand
+        display.textContent = a;
+    } else {
+        b += input; // Capture the second operand
+        display.textContent = b; // Show the second operand while typing
+    }
 });
+
+
